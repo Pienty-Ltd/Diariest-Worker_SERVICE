@@ -1,0 +1,16 @@
+{
+    "en": {
+        "MaxLoginLimit": "",
+        "SuccessLogin": "Logout successful.",
+        "Error": "An error occurred."
+    },
+    "tr": {
+        "WrongEmail": "Geçersiz e-posta adresi.",
+        "WrongPassword": "Şifre hatalı.",
+        "UserDisabled": "Hesap devre dışı.",
+        "UserDeleted": "Yasaklı.",
+        "MaxLoginLimit": "Giriş limiti aşıldı.",
+        "SuccessLogin": "Giriş başarılı.",
+        "Error": "Hata oluştu."
+    }
+}
