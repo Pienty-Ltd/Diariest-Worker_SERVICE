@@ -1,4 +1,7 @@
-﻿namespace Pienty.Diariest.Core.Services.Handlers
+﻿using System;
+using System.Threading.Tasks;
+
+namespace Pienty.Diariest.Core.Services.Handlers
 {
     public interface IRedisService
     {

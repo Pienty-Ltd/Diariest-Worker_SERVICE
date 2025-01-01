@@ -1,5 +1,11 @@
 ﻿using Dapper;
+using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
 using Pienty.Diariest.Core.Contexts;
 using Pienty.Diariest.Core.Helpers;
@@ -39,7 +45,7 @@ namespace Pienty.Diariest.API
             
             services.AddSwaggerGen(c =>
             {
-                c.SwaggerDoc("v1.0.0", new OpenApiInfo { Title = "Pienty.CRM API", Version = "v1.0.0" });
+                c.SwaggerDoc("v1.0.0", new OpenApiInfo { Title = "Pienty.CRM.API", Version = "v1.0.0" });
             });
             
             var redisConnectionString = Configuration.GetConnectionString("RedisContext");

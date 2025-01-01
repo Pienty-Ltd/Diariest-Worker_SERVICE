@@ -1,4 +1,6 @@
-﻿using Pienty.Diariest.Core.Services.Handlers;
+﻿using System;
+using System.Threading.Tasks;
+using Pienty.Diariest.Core.Services.Handlers;
 using IRedisClientsManager = ServiceStack.Redis.IRedisClientsManager;
 
 namespace Pienty.Diariest.Core.Services

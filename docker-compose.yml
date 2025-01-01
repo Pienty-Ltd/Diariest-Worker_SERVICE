@@ -1,0 +1,22 @@
+version: '3.8'
+
+services:
+  redis:
+    container_name: diariest_redis
+    image: 'redis:latest'
+    command: redis-server --requirepass TCuLGDawzqgG6oAZxVwMGAIB2sR13ipupg8Bc3VE9rjyeis2nIgp3MdqPZdlv1dmVEqtiAHLK0iS4jmk
+    environment:
+      - ALLOW_EMPTY_PASSWORD=yes
+      - REDIS_DISABLE_COMMANDS=FLUSHDB,FLUSHALL,CONFIG
+    ports:
+      - '6379:6379'
+
+  postgresql:
+    container_name: diariest_psql
+    image: 'postgres:latest'
+    environment:
+      - POSTGRES_USER=diariest
+      - POSTGRES_PASSWORD=123456
+      - POSTGRES_DB=diariest
+    ports:
+      - '5432:5432'

@@ -1,4 +1,10 @@
-namespace Diariest.BS.Worker;
+using System;
+using System.Threading;
+using System.Threading.Tasks;
+using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
+
+namespace Pienty.Diariest.Worker;
 
 public class Worker : BackgroundService
 {

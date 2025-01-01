@@ -12,10 +12,6 @@
     </ItemGroup>
 
     <ItemGroup>
-      <Folder Include="Controllers\" />
-    </ItemGroup>
-
-    <ItemGroup>
       <ProjectReference Include="..\Pienty.Diariest.Core\Pienty.Diariest.Core.csproj" />
     </ItemGroup>
 

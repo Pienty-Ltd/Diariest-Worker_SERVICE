@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json;
+﻿using System;
+using Newtonsoft.Json;
 using Pienty.Diariest.Core.Models.Database;
 using JsonSerializer = Newtonsoft.Json.JsonSerializer;
 
