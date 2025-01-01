@@ -1,19 +1,299 @@
+﻿using Pienty.CRM.Core.Helpers;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
+using Pienty.Diariest.API.Authentication;
+using Pienty.Diariest.Core.Models.API;
+using Pienty.Diariest.Core.Models.Database;
+using Pienty.Diariest.Core.Models.Database.Redis;
+using Pienty.Diariest.Core.Services;
+using Pienty.Diariest.Core.Services.Handlers;
 
 namespace Pienty.Diariest.API.Controllers
 {
     [ApiController]
-    [Route("")]
-    public class AuthController
+    [Microsoft.AspNetCore.Mvc.Route("api/v1/auth")]
+    public class AuthController : ControllerBase
     {
         private readonly ILogger<AuthController> _logger;
+        private readonly IUserService _userService;
+        private readonly IRedisService _redisService;
+        private readonly APIMessageService _apiMessageService;
 
-        public AuthController(ILogger<AuthController> logger)
+        public AuthController(ILogger<AuthController> logger, IUserService userService, IRedisService redisService, APIMessageService apiMessageService)
         {
             _logger = logger;
+            _userService = userService;
+            _redisService = redisService;
+            _apiMessageService = apiMessageService;
+        }
+
+        [HttpPost("Ping")]
+        [ProducesResponseType(typeof(APIResponse.BaseResponse<bool>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(APIResponse.BaseResponse<bool>), StatusCodes.Status400BadRequest)]
+        public async Task<IActionResult> Ping()
+        {
+            try
+            {
+                var authToken = HttpContext.Items["AuthToken"] as string;
+                if (authToken == null)
+                {
+                    return await Task.FromResult<IActionResult>(Ok(new APIResponse.BaseResponse<bool>()
+                    {
+                        Message = null,
+                        Error = new APIResponse.ErrorResponse()
+                        {
+                            Logout = true
+                        }
+                    }));
+                }
+
+                string cachedPingKey = RedisHelper.GetKey_Ping(authToken);
+                var cachedPing = _redisService.Get<int>(cachedPingKey);
+                if (cachedPing == 1)
+                {
+                    return await Task.FromResult<IActionResult>(Ok(new APIResponse.BaseResponse<bool>()
+                    {
+                        Error = new APIResponse.ErrorResponse()
+                        {
+                            Logout = true
+                        }
+                    }));
+                }
+                
+                var cachedAuthToken = _redisService.Get<AuthenticationToken>(RedisHelper.GetKey_AuthToken(authToken));
+                if (cachedAuthToken == null)
+                {
+                    return await Task.FromResult<IActionResult>(Ok(new APIResponse.BaseResponse<bool>()
+                    {
+                        Error = new APIResponse.ErrorResponse()
+                        {
+                            Logout = true
+                        }
+                    }));
+                }
+                
+                _redisService.Set(cachedPingKey, 1, TimeSpan.FromMinutes(1));
+                _redisService.Set(RedisHelper.GetKey_AuthToken(authToken), cachedAuthToken, TimeSpan.FromHours(1));
+                
+                return await Task.FromResult<IActionResult>(Ok(new APIResponse.BaseResponse<bool>()
+                {
+                    Data = true,
+                    Success = true
+                }));
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, ex.Message);
+                return await Task.FromResult<IActionResult>(Ok(new APIResponse.BaseResponse<APIResponse.LogoutResponse>()
+                {
+                    Message = _apiMessageService.GetMessage(APIMessage.Error),
+                    Error = new APIResponse.ErrorResponse()
+                    {
+                        Message = ex.Message
+                    }
+                }));
+            }
         }
         
         
+        
+        [HttpPost("CreateTestUser")]
+        [ProducesResponseType(typeof(APIResponse.BaseResponse<bool>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(APIResponse.BaseResponse<bool>), StatusCodes.Status400BadRequest)]
+        public async Task<IActionResult> CreateTestUser()
+        {
+            try
+            {
+                var newUser = new User()
+                {
+                    Name = "Tuna",
+                    Email = "tuna@pienty.com",
+                    Password = CryptoHelper.EncryptPassword("123456"),
+                    PhoneNumber = "5305757860",
+                    CreatedDate = DateTime.Now,
+                    UpdatedDate = DateTime.Now,
+                    Deleted = false,
+                    Permission = UserPermission.Admin,
+                    Language = Language.Turkish
+                };
+                _userService.AddUser(newUser);
+                return await Task.FromResult<IActionResult>(Ok(new APIResponse.BaseResponse<bool>()
+                {
+                    Data = true,
+                    Success = true
+                }));
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, ex.Message);
+                return await Task.FromResult<IActionResult>(Ok(new APIResponse.BaseResponse<APIResponse.LogoutResponse>()
+                {
+                    Message = _apiMessageService.GetMessage(APIMessage.Error),
+                    Error = new APIResponse.ErrorResponse()
+                    {
+                        Message = ex.Message
+                    }
+                }));
+            }
+        }
+
+        [HttpPost("Login")]
+        [ProducesResponseType(typeof(APIResponse.BaseResponse<APIResponse.LoginResponse>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(APIResponse.BaseResponse<APIResponse.LoginResponse>), StatusCodes.Status400BadRequest)]
+        public async Task<IActionResult> Login(APIRequest.LoginRequest model)
+        {
+            try
+            {
+                var ipAddress = HttpContext.Connection.RemoteIpAddress?.ToString();
+                if (ipAddress == null) ipAddress = "127.0.0.1";
+                
+                if (!StringHelper.IsValidEmail(model.Email))
+                {
+                    return await Task.FromResult<IActionResult>(Ok(new APIResponse.BaseResponse<APIResponse.LoginResponse>()
+                    {
+                        Success = false,
+                        Message = _apiMessageService.GetMessage(APIMessage.WrongEmail)
+                    }));
+                }
+
+                var user = _userService.GetUserWithEmail(model.Email);
+                if (user == null)
+                {
+                    return await Task.FromResult<IActionResult>(Ok(new APIResponse.BaseResponse<APIResponse.LoginResponse>()
+                    {
+                        Success = false,
+                        Message = _apiMessageService.GetMessage(APIMessage.WrongEmail)
+                    }));
+                }
+                if (!CryptoHelper.VerifyPassword(model.Password, user.Password))
+                {
+                    return await Task.FromResult<IActionResult>(Ok(new APIResponse.BaseResponse<APIResponse.LoginResponse>()
+                    {
+                        Success = false,
+                        Message = _apiMessageService.GetMessage(APIMessage.WrongPassword)
+                    }));
+                }
+
+                if (!user.Active)
+                {
+                    return await Task.FromResult<IActionResult>(Ok(new APIResponse.BaseResponse<APIResponse.LoginResponse>()
+                    {
+                        Success = false,
+                        Message = _apiMessageService.GetMessage(APIMessage.UserDisabled)
+                    }));
+                }
+
+                if (user.Deleted)
+                {
+                    return await Task.FromResult<IActionResult>(Ok(new APIResponse.BaseResponse<APIResponse.LoginResponse>()
+                    {
+                        Success = false,
+                        Message = _apiMessageService.GetMessage(APIMessage.UserDeleted)
+                    }));
+                }
+
+                var authToken = CryptoHelper.GenerateSecureToken();
+                var tokenObj = new AuthenticationToken()
+                {
+                    UserId = user.Id,
+                    AccessToken = authToken,
+                    Expiration = DateTime.Now.AddHours(1),
+                    Permission = user.Permission
+                };
+                
+                var ipTokenList = _redisService.Get<List<string>>(RedisHelper.GetKey_Limit(ipAddress));
+                if (ipTokenList == null) ipTokenList = new List<string>();
+                if (ipTokenList.Count > 5)
+                {
+                    return await Task.FromResult<IActionResult>(Ok(new APIResponse.BaseResponse<APIResponse.LoginResponse>()
+                    {
+                        Success = false,
+                        Message = _apiMessageService.GetMessage(APIMessage.MaxLoginLimit)
+                    }));
+                }
+                if (!ipTokenList.Contains(authToken))
+                {
+                    ipTokenList.Add(authToken);
+                }
+                _redisService.Set(RedisHelper.GetKey_Limit(ipAddress), ipTokenList, TimeSpan.FromMinutes(15));
+                
+                _redisService.Set(RedisHelper.GetKey_User(user.Id), user, TimeSpan.FromHours(1));
+                _redisService.Set(RedisHelper.GetKey_AuthToken(authToken), tokenObj, TimeSpan.FromHours(1));
+
+                return await Task.FromResult<IActionResult>(Ok(new APIResponse.BaseResponse<APIResponse.LoginResponse>()
+                {
+                    Success = true,
+                    Message = _apiMessageService.GetMessage(APIMessage.SuccessLogin),
+                    Data = new APIResponse.LoginResponse()
+                    {
+                        Authentication = tokenObj
+                    }
+                }));
+            }
+            catch(Exception ex)
+            {
+                _logger.LogError(ex, ex.Message);
+                return await Task.FromResult<IActionResult>(Ok(new APIResponse.BaseResponse<APIResponse.LoginResponse>()
+                {
+                    Success = false,
+                    Message = _apiMessageService.GetMessage(APIMessage.Error),
+                    Error = new APIResponse.ErrorResponse()
+                    {
+                        Message = ex.Message
+                    }
+                }));
+            }
+        }
+
+        [UserAuth(new UserPermission[]
+        {
+            UserPermission.Agency, UserPermission.Client, UserPermission.Admin
+        })]
+        [HttpPost("Logout")]
+        [ProducesResponseType(typeof(APIResponse.BaseResponse<APIResponse.LogoutResponse>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(APIResponse.BaseResponse<APIResponse.LogoutResponse>), StatusCodes.Status400BadRequest)]
+        public async Task<IActionResult> Logout()
+        {
+            try
+            {
+                var authToken = HttpContext.Items["AuthToken"] as string;
+                var ipAddress = HttpContext.Connection.RemoteIpAddress?.ToString();
+                
+                var ipTokenList = _redisService.Get<List<string>>(RedisHelper.GetKey_Limit(ipAddress));
+                if (ipTokenList.Contains(authToken))
+                {
+                    ipTokenList.Remove(authToken);
+                }
+
+                if (ipTokenList.Count == 0)
+                {
+                    _redisService.Remove(RedisHelper.GetKey_Limit(ipAddress));
+                }
+                else
+                {
+                    _redisService.Set(RedisHelper.GetKey_Limit(ipAddress), ipTokenList);
+                }
+                _redisService.Remove(RedisHelper.GetKey_AuthToken(authToken));
+                
+                return await Task.FromResult<IActionResult>(Ok(new APIResponse.BaseResponse<APIResponse.LogoutResponse>()
+                {
+                    Success = true,
+                    Message = _apiMessageService.GetMessage(APIMessage.SuccessLogout)
+                }));
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, ex.Message);
+                return await Task.FromResult<IActionResult>(Ok(new APIResponse.BaseResponse<APIResponse.LogoutResponse>()
+                {
+                    Success = false,
+                    Message = _apiMessageService.GetMessage(APIMessage.Error),
+                    Error = new APIResponse.ErrorResponse()
+                    {
+                        Message = ex.Message
+                    }
+                }));
+            }
+        }
+
     }
 }

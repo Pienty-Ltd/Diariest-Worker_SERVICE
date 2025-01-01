@@ -9,5 +9,6 @@
     public class ServerConfig
     {
         public bool TestMode { get; set; }
+        public string TestToken { get; set; }
     }
 }
