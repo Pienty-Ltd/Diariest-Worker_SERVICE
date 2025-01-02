@@ -25,4 +25,8 @@
       <PackageReference Include="ServiceStack.Redis" Version="8.2.2" />
     </ItemGroup>
 
+    <ItemGroup>
+      <Folder Include="obj\Debug\net7.0\" />
+    </ItemGroup>
+
 </Project>

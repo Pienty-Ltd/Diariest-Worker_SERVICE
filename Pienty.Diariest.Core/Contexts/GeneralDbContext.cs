@@ -1,6 +1,5 @@
 ﻿using Pienty.Diariest.Core.Models.Database;
 using Microsoft.EntityFrameworkCore;
-using Pienty.Diariest.Core.Models.Database;
 
 namespace Pienty.Diariest.Core.Contexts
 {
