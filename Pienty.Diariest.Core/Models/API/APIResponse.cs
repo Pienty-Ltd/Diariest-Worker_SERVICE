@@ -18,6 +18,7 @@ namespace Pienty.Diariest.Core.Models.API
             public T? Data { get; set; }
             public bool Success { get; set; }
             public string? Message { get; set; }
+
             public ErrorResponse? Error { get; set; }
         }
 
@@ -35,5 +36,16 @@ namespace Pienty.Diariest.Core.Models.API
         {
             public User User { get; set; }
         }
+        
+        #region TestResponses 
+        
+        public class CreateUserResponse
+        {
+            public long Id { get; set; }
+            public string Email { get; set; }
+            public string Password { get; set; }
+        }
+        
+        #endregion
     }
 }

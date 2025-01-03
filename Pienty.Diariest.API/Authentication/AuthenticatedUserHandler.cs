@@ -1,4 +1,6 @@
-﻿using System.Security.Claims;
+﻿using System;
+using System.Security.Claims;
+using Microsoft.AspNetCore.Http;
 using Pienty.Diariest.Core.Models.Database;
 
 namespace Pienty.Diariest.API.Authentication

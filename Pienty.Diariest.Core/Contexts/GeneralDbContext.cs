@@ -6,7 +6,6 @@ namespace Pienty.Diariest.Core.Contexts
     
     public class GeneralDbContext : DbContext
     {
-
         public GeneralDbContext(DbContextOptions<GeneralDbContext> options) : base(options) {}
         
         public DbSet<User> User { get; set; }
