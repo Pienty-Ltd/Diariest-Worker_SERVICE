@@ -1,11 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
-using Pienty.CRM.Core.Helpers;
+﻿using Pienty.CRM.Core.Helpers;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
 using Pienty.Diariest.API.Authentication;
+using Pienty.Diariest.Core.Helpers;
 using Pienty.Diariest.Core.Models.API;
 using Pienty.Diariest.Core.Models.Database;
 using Pienty.Diariest.Core.Models.Database.Redis;
@@ -127,7 +123,7 @@ namespace Pienty.Diariest.API.Controllers
                         Message = _apiMessageService.GetMessage(APIMessage.WrongEmail)
                     }));
                 }
-                if (!CryptoHelper.VerifyPassword(model.Password, user.Password))
+                if (!CryptoHelper.VerifyPassword(model.Password, user.password))
                 {
                     return await Task.FromResult<IActionResult>(Ok(new APIResponse.BaseResponse<APIResponse.LoginResponse>()
                     {
@@ -136,7 +132,7 @@ namespace Pienty.Diariest.API.Controllers
                     }));
                 }
 
-                if (!user.Active)
+                if (!user.active)
                 {
                     return await Task.FromResult<IActionResult>(Ok(new APIResponse.BaseResponse<APIResponse.LoginResponse>()
                     {
@@ -145,7 +141,7 @@ namespace Pienty.Diariest.API.Controllers
                     }));
                 }
 
-                if (user.Deleted)
+                if (user.deleted)
                 {
                     return await Task.FromResult<IActionResult>(Ok(new APIResponse.BaseResponse<APIResponse.LoginResponse>()
                     {
@@ -157,10 +153,10 @@ namespace Pienty.Diariest.API.Controllers
                 var authToken = CryptoHelper.GenerateSecureToken();
                 var tokenObj = new AuthenticationToken()
                 {
-                    UserId = user.Id,
+                    UserId = user.id,
                     AccessToken = authToken,
                     Expiration = DateTime.Now.AddHours(1),
-                    Permission = user.Permission
+                    Permission = user.permission
                 };
                 
                 var ipTokenList = _redisService.Get<List<string>>(RedisHelper.GetKey_Limit(ipAddress));
@@ -179,7 +175,7 @@ namespace Pienty.Diariest.API.Controllers
                 }
                 _redisService.Set(RedisHelper.GetKey_Limit(ipAddress), ipTokenList, TimeSpan.FromMinutes(15));
                 
-                _redisService.Set(RedisHelper.GetKey_User(user.Id), user, TimeSpan.FromHours(1));
+                _redisService.Set(RedisHelper.GetKey_User(user.id), user, TimeSpan.FromHours(1));
                 _redisService.Set(RedisHelper.GetKey_AuthToken(authToken), tokenObj, TimeSpan.FromHours(1));
 
                 return await Task.FromResult<IActionResult>(Ok(new APIResponse.BaseResponse<APIResponse.LoginResponse>()

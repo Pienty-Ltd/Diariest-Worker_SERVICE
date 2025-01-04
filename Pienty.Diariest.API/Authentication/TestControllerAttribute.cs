@@ -19,7 +19,7 @@ namespace Pienty.Diariest.API.Authentication
 
         public async Task OnAuthorizationAsync(AuthorizationFilterContext context)
         {
-            var token = context.HttpContext.Request.Headers["Authorization"]
+            var token = context.HttpContext.Request.Headers["TestToken"]
                 .FirstOrDefault()?.Split(" ").Last();
 
             if (string.IsNullOrEmpty(token) || token != _options.Value.ServerConfig.TestToken)

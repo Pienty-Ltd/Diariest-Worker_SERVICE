@@ -56,6 +56,25 @@ namespace Pienty.Diariest.Core.Services
                 return null;
             }
         }
+
+        public bool IsUserExistWithEmail(string email)
+        {
+            try
+            {
+                using (var conn = _dbService.GetDbConnection())
+                {
+                    string sql = @"SELECT EXISTS(SELECT 1 FROM users u WHERE u.email = @Email)";
+
+                    var res = conn.QueryFirstOrDefault<bool>(sql, new { Email = email });
+                    return true;
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, ex.Message);
+                return false;
+            }
+        }
         
         public bool AddUser(User user)
         {
@@ -84,21 +103,21 @@ namespace Pienty.Diariest.Core.Services
                 using (var conn = _dbService.GetDbConnection())
                 {
                     string itemSql = @"select * from user u where u.id = @Id";
-                    var item = conn.QueryFirstOrDefault<User>(itemSql, new { Id = user.Id });
+                    var item = conn.QueryFirstOrDefault<User>(itemSql, new { Id = user.id });
 
                     if (item != null)
                     {
-                        if (item.Permission == UserPermission.Agency && user.Permission != UserPermission.Agency)// Agency Yetkisi Değiştirilemez.
+                        if (item.permission == UserPermission.Agency && user.permission != UserPermission.Agency)// Agency Yetkisi Değiştirilemez.
                         {
-                            item.Permission = item.Permission;   
+                            item.permission = item.permission;   
                         }
                         else
                         {
-                            item.Permission = user.Permission; 
+                            item.permission = user.permission; 
                         }
-                        item.Active = user.Active;
-                        item.Deleted = user.Deleted;
-                        item.PhoneNumber = user.PhoneNumber;
+                        item.active = user.active;
+                        item.deleted = user.deleted;
+                        item.phone_number = user.phone_number;
                         
                         conn.Update<User>(item);
                     }

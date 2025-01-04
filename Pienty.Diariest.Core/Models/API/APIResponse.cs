@@ -1,4 +1,5 @@
-﻿using Pienty.Diariest.Core.Models.Database;
+﻿using System;
+using Pienty.Diariest.Core.Models.Database;
 using Pienty.Diariest.Core.Models.Database.Redis;
 
 namespace Pienty.Diariest.Core.Models.API

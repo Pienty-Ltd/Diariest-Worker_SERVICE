@@ -12,7 +12,7 @@ namespace Pienty.Diariest.Core.Services
 
         public APIMessageService()
         {
-            var jsonPath = Path.Combine(Directory.GetCurrentDirectory(), "Resources", "api_messages.json");
+            var jsonPath = Path.Combine(Directory.GetCurrentDirectory(), "..", "Pienty.Diariest.Core", "Resources", "api_messages.json");
             var json = File.ReadAllText(jsonPath);
             _messages = JsonConvert.DeserializeObject<Dictionary<string, Dictionary<string, string>>>(json);
         }

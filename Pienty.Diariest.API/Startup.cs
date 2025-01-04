@@ -1,4 +1,5 @@
 ﻿using Dapper;
+using Dapper.Contrib.Extensions;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
@@ -26,7 +27,8 @@ namespace Pienty.Diariest.API
 
         public void ConfigureServices(IServiceCollection services)
         {
-            
+            SqlMapperExtensions.TableNameMapper = (type) => $"\"{GeneralDbContext.ToSnakeCase(type.Name)}s\"";
+            Dapper.DefaultTypeMap.MatchNamesWithUnderscores = true;
             services.AddCors(options =>
             {
                 options.AddPolicy("AllowAllOrigins", builder =>
@@ -60,15 +62,10 @@ namespace Pienty.Diariest.API
             services.AddScoped<IDbService, DbService>();
             services.AddScoped<IBaseService, BaseService>();
             services.AddScoped<IUserService, UserService>();
-            /*services.AddScoped<ICompanyService, CompanyService>();
-            services.AddScoped<IErrorLoggerService, ErrorLoggerService>();
-            services.AddScoped<ILoginLoggerService, LoginLoggerService>();*/
+            services.AddSingleton<APIMessageService>();
             
             //Helpers
             //services.AddScoped<ILogHelper, LogHelper>();
-            
-            //Other Services
-            //services.AddSingleton<APIMessageService>();
 
             services.AddMvc();
    
@@ -82,6 +79,8 @@ namespace Pienty.Diariest.API
         
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
+            Dapper.DefaultTypeMap.MatchNamesWithUnderscores = true;
+            
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();

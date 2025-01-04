@@ -1,4 +1,4 @@
-﻿namespace Pienty.CRM.Core.Helpers
+﻿namespace Pienty.Diariest.Core.Helpers
 {
     public class RedisHelper
     {

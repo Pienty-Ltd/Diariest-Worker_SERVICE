@@ -1,9 +1,6 @@
-using System;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
 using Pienty.CRM.Core.Helpers;
+using Pienty.Diariest.API.Authentication;
 using Pienty.Diariest.Core.Models.API;
 using Pienty.Diariest.Core.Models.Database;
 using Pienty.Diariest.Core.Services;
@@ -26,16 +23,26 @@ namespace Pienty.Diariest.API.Controllers
             _apiMessageService = apiMessageService;
         }
         
+        [TestController]
         [HttpGet("GetUser")]
-        [ProducesResponseType(typeof(APIResponse.BaseResponse<bool>), StatusCodes.Status200OK)]
-        [ProducesResponseType(typeof(APIResponse.BaseResponse<bool>), StatusCodes.Status400BadRequest)]
-        public async Task<IActionResult> GetUser()
+        [ProducesResponseType(typeof(APIResponse.BaseResponse<User>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(APIResponse.BaseResponse<User>), StatusCodes.Status400BadRequest)]
+        public async Task<IActionResult> GetUser(APIRequest.GetUserRequest model)
         {
             try
             {
-                return await Task.FromResult<IActionResult>(Ok(new APIResponse.BaseResponse<bool>()
+                var user = _userService.GetUserWithId(model.Id);
+                if (user == null)
                 {
-                    Data = true,
+                    return await Task.FromResult<IActionResult>(Ok(new APIResponse.BaseResponse<User>()
+                    {
+                        Success = false
+                    }));
+                }
+                
+                return await Task.FromResult<IActionResult>(Ok(new APIResponse.BaseResponse<User>()
+                {
+                    Data = user,
                     Success = true
                 }));
             }
@@ -53,24 +60,35 @@ namespace Pienty.Diariest.API.Controllers
             }
         }
         
+        [TestController]
         [HttpPost("CreateUser")]
         [ProducesResponseType(typeof(APIResponse.BaseResponse<APIResponse.CreateUserResponse>), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(APIResponse.BaseResponse<APIResponse.CreateUserResponse>), StatusCodes.Status400BadRequest)]
-        public async Task<IActionResult> CreateUser(APIRequest.LoginRequest model)
+        public async Task<IActionResult> CreateUser(APIRequest.CreateUserRequest model)
         {
             try
             {
+                var userIsExist = _userService.IsUserExistWithEmail(model.Email);
+                if (userIsExist)
+                {
+                    return await Task.FromResult<IActionResult>(Ok(new APIResponse.BaseResponse<APIResponse.LogoutResponse>()
+                    {
+                        Message = "Bu e-mail zaten kullanılıyor.",
+                        Success = false
+                    }));
+                }
+                
                 var newUser = new User()
                 {
-                    Name = "Tuna",
-                    Email = "tuna@pienty.com",
-                    Password = CryptoHelper.EncryptPassword("123456"),
-                    PhoneNumber = "5305757860",
-                    CreatedDate = DateTime.Now,
-                    UpdatedDate = DateTime.Now,
-                    Deleted = false,
-                    Permission = UserPermission.Admin,
-                    Language = Language.Turkish
+                    name = model.Name,
+                    email = model.Email,
+                    password = CryptoHelper.EncryptPassword(model.Password),
+                    phone_number = model.PhoneNumber,
+                    created_date = DateTime.Now,
+                    updated_date = DateTime.Now,
+                    deleted = false,
+                    permission = UserPermission.Admin,
+                    language = Language.Turkish
                 };
                 _userService.AddUser(newUser);
                 return await Task.FromResult<IActionResult>(Ok(new APIResponse.BaseResponse<bool>()

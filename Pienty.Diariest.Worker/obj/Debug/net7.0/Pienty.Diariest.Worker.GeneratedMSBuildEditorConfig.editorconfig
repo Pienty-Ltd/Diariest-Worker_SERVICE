@@ -8,4 +8,4 @@ build_property.PlatformNeutralAssembly =
 build_property.EnforceExtendedAnalyzerRules = 
 build_property._SupportedPlatformList = Linux,macOS,Windows
 build_property.RootNamespace = Pienty.Diariest.Worker
-build_property.ProjectDir = /Users/tnycl/RiderProjects/Diariest-Worker_SERVICE/Pienty.Diariest.Worker/
+build_property.ProjectDir = C:\Users\tunay\Desktop\Diariest-Worker_SERVICE\Pienty.Diariest.Worker\

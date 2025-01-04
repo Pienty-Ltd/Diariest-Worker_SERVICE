@@ -1,7 +1,8 @@
-﻿using System.Globalization;
+﻿using System;
+using System.Globalization;
 using System.Text.RegularExpressions;
 
-namespace Pienty.CRM.Core.Helpers;
+namespace Pienty.Diariest.Core.Helpers;
 
 public class StringHelper
 {

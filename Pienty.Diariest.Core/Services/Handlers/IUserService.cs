@@ -6,6 +6,7 @@ namespace Pienty.Diariest.Core.Services.Handlers
     {
         User GetUserWithId(long id);
         User GetUserWithEmail(string email);
+        bool IsUserExistWithEmail(string email);
         bool UpdateUser(User user);
         bool AddUser(User user);
     }

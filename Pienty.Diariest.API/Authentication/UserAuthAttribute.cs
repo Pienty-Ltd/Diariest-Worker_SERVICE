@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
-using Pienty.CRM.Core.Helpers;
+using Pienty.Diariest.Core.Helpers;
 using Pienty.Diariest.Core.Models.API;
 using Pienty.Diariest.Core.Models.Database;
 using Pienty.Diariest.Core.Models.Database.Redis;
@@ -77,7 +77,7 @@ public class UserAuthAttribute : Attribute, IAsyncAuthorizationFilter
                 await redisService.SetAsync(RedisHelper.GetKey_User(cachedToken.UserId), user, TimeSpan.FromHours(1));
             }
 
-            if (user.Permission != UserPermission.Admin && !_userPermissions.Contains(user.Permission))
+            if (user.permission != UserPermission.Admin && !_userPermissions.Contains(user.permission))
             {
                 SetUnauthorizedResult(context, message: "No Access.", false);
                 return;
@@ -85,9 +85,9 @@ public class UserAuthAttribute : Attribute, IAsyncAuthorizationFilter
             
             var claims = new[]
             {
-                new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
-                new Claim(ClaimTypes.Name, user.Email),
-                new Claim(ClaimTypes.Role, user.Permission.ToString())
+                new Claim(ClaimTypes.NameIdentifier, user.id.ToString()),
+                new Claim(ClaimTypes.Name, user.email),
+                new Claim(ClaimTypes.Role, user.permission.ToString())
             };
 
             var identity = new ClaimsIdentity(claims, "Token");
