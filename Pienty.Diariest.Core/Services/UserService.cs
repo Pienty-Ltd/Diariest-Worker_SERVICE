@@ -66,7 +66,7 @@ namespace Pienty.Diariest.Core.Services
                     string sql = @"SELECT EXISTS(SELECT 1 FROM users u WHERE u.email = @Email)";
 
                     var res = conn.QueryFirstOrDefault<bool>(sql, new { Email = email });
-                    return true;
+                    return res;
                 }
             }
             catch (Exception ex)
@@ -83,7 +83,6 @@ namespace Pienty.Diariest.Core.Services
                 using (var conn = _dbService.GetDbConnection())
                 {
                     conn.Insert<User>(user);
-
                     return true;
                 }
             }

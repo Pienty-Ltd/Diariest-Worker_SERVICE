@@ -36,6 +36,7 @@ namespace Pienty.Diariest.API.Controllers
                 {
                     return await Task.FromResult<IActionResult>(Ok(new APIResponse.BaseResponse<User>()
                     {
+                        Message = "Kullanıcı bulunamadı",
                         Success = false
                     }));
                 }
@@ -49,7 +50,7 @@ namespace Pienty.Diariest.API.Controllers
             catch (Exception ex)
             {
                 _logger.LogError(ex, ex.Message);
-                return await Task.FromResult<IActionResult>(Ok(new APIResponse.BaseResponse<APIResponse.LogoutResponse>()
+                return await Task.FromResult<IActionResult>(Ok(new APIResponse.BaseResponse<User>()
                 {
                     Message = _apiMessageService.GetMessage(APIMessage.Error),
                     Error = new APIResponse.ErrorResponse()

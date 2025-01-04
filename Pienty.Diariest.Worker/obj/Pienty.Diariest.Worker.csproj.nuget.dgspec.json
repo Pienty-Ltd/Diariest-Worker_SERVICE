@@ -88,7 +88,7 @@
             },
             "Npgsql.EntityFrameworkCore.PostgreSQL": {
               "target": "Package",
-              "version": "[7.0.18, )"
+              "version": "[7.0.4, )"
             },
             "ServiceStack.Redis": {
               "target": "Package",

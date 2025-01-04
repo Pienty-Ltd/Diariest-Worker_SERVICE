@@ -30,10 +30,10 @@ namespace Pienty.Diariest.Core.Models.API
     
         public class LogoutResponse
         {
-        
+            
         }
 
-        public class GetMainResponse
+        public class GetGeneralResponse
         {
             public User User { get; set; }
         }
