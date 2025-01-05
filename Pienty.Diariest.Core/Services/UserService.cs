@@ -43,7 +43,7 @@ namespace Pienty.Diariest.Core.Services
             {
                 using (var conn = _dbService.GetDbConnection())
                 {
-                    string sql = @"select * from ""user"" u where u.email = @Email";
+                    string sql = @"select * from users u where u.email = @Email";
 
                     var res = conn.QueryFirstOrDefault<User>(sql, new { Email = email });
 

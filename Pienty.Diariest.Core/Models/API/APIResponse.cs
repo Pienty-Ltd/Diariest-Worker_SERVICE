@@ -1,5 +1,4 @@
-﻿using System;
-using Pienty.Diariest.Core.Models.Database;
+﻿using Pienty.Diariest.Core.Models.Database;
 using Pienty.Diariest.Core.Models.Database.Redis;
 
 namespace Pienty.Diariest.Core.Models.API
@@ -35,6 +34,7 @@ namespace Pienty.Diariest.Core.Models.API
 
         public class GetGeneralResponse
         {
+            
             public User User { get; set; }
         }
         

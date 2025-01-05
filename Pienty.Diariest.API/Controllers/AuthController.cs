@@ -27,6 +27,7 @@ namespace Pienty.Diariest.API.Controllers
             _apiMessageService = apiMessageService;
         }
 
+        [UserAuth(UserPermission.Admin, UserPermission.Agency, UserPermission.Client)]
         [HttpPost("Ping")]
         [ProducesResponseType(typeof(APIResponse.BaseResponse<bool>), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(APIResponse.BaseResponse<bool>), StatusCodes.Status400BadRequest)]

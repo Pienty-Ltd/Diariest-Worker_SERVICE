@@ -83,6 +83,14 @@ public class UserAuthAttribute : Attribute, IAsyncAuthorizationFilter
                 return;
             }
             
+            var ipAddress = context.HttpContext.Connection.RemoteIpAddress?.ToString();
+                
+            var ipTokenList = redisService.Get<List<string>>(RedisHelper.GetKey_Limit(ipAddress));
+            if (!ipTokenList.Contains(token))
+            {
+                ipTokenList.Remove(token);
+            }
+            
             var claims = new[]
             {
                 new Claim(ClaimTypes.NameIdentifier, user.id.ToString()),

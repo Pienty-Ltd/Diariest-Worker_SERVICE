@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
+using Pienty.Diariest.API.Authentication;
 using Pienty.Diariest.Core.Helpers;
 using Pienty.Diariest.Core.Models.API;
 using Pienty.Diariest.Core.Models.Database;
@@ -25,6 +26,7 @@ namespace Pienty.Diariest.API.Controllers
             _apiMessageService = apiMessageService;
         }
         
+        [UserAuth(UserPermission.Admin, UserPermission.Agency, UserPermission.Client)]
         [HttpGet("get")]
         [ProducesResponseType(typeof(APIResponse.BaseResponse<APIResponse.GetGeneralResponse>), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(APIResponse.BaseResponse<APIResponse.GetGeneralResponse>), StatusCodes.Status400BadRequest)]
@@ -38,10 +40,15 @@ namespace Pienty.Diariest.API.Controllers
                 var cachedAuthorization =
                     _redisService.Get<AuthenticationToken>(RedisHelper.GetKey_AuthToken(authToken));
                 var cachedUser = _redisService.Get<User>(RedisHelper.GetKey_User(cachedAuthorization.UserId));
-                
-                return await Task.FromResult<IActionResult>(Ok(new APIResponse.BaseResponse<User>()
+
+                var res = new APIResponse.GetGeneralResponse()
                 {
-                    Data = null,
+                    User = cachedUser
+                };
+                
+                return await Task.FromResult<IActionResult>(Ok(new APIResponse.BaseResponse<APIResponse.GetGeneralResponse>()
+                {
+                    Data = res,
                     Success = true
                 }));
             }
