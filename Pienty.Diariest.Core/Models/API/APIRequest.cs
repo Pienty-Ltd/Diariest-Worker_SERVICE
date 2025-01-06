@@ -3,11 +3,24 @@
     public class APIRequest
     {
         
+        #region Auth
+        
         public class LoginRequest
         {
-            public string Email { get; set; } //E
-            public string Password { get; set; } //P
+            public string Email { get; set; } //e
+            public string Password { get; set; } //p
         }
+        
+        #endregion
+
+        #region Agency
+
+        public class GetAgencyRequest
+        {
+            public long AgencyId { get; set; } //aid
+        }
+
+        #endregion
         
         #region TestRequests
 

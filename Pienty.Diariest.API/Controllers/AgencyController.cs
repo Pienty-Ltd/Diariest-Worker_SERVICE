@@ -19,17 +19,20 @@ namespace Pienty.Diariest.API.Controllers
             _logger = logger;
             _apiMessageService = apiMessageService;
             _redisService = redisService;
+            
         }
 
-        [HttpPost("Login")]
-        [ProducesResponseType(typeof(APIResponse.BaseResponse<APIResponse.LoginResponse>), StatusCodes.Status200OK)]
-        [ProducesResponseType(typeof(APIResponse.BaseResponse<APIResponse.LoginResponse>),
+        [HttpPost("get")]
+        [ProducesResponseType(typeof(APIResponse.BaseResponse<APIResponse.GetAgencyResponse>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(APIResponse.BaseResponse<APIResponse.GetAgencyResponse>),
             StatusCodes.Status400BadRequest)]
-        public async Task<IActionResult> Login(APIRequest.LoginRequest model)
+        public async Task<IActionResult> GetAgencyDashboard(APIRequest.GetAgencyRequest model)
         {
             try
             {
-
+                var agencyId = model.AgencyId;
+                
+                
                 return null;
             }
             catch (Exception ex)

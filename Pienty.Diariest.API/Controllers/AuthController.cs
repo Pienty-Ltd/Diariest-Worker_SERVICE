@@ -85,11 +85,13 @@ namespace Pienty.Diariest.API.Controllers
             catch (Exception ex)
             {
                 _logger.LogError(ex, ex.Message);
-                return await Task.FromResult<IActionResult>(Ok(new APIResponse.BaseResponse<APIResponse.LogoutResponse>()
+                return await Task.FromResult<IActionResult>(Ok(new APIResponse.BaseResponse<string>()
                 {
+                    Data = null,
                     Message = _apiMessageService.GetMessage(APIMessage.Error),
                     Error = new APIResponse.ErrorResponse()
                     {
+                        Logout = true,
                         Message = ex.Message
                     }
                 }));
@@ -209,8 +211,8 @@ namespace Pienty.Diariest.API.Controllers
             UserPermission.Agency, UserPermission.Client, UserPermission.Admin
         })]
         [HttpPost("Logout")]
-        [ProducesResponseType(typeof(APIResponse.BaseResponse<APIResponse.LogoutResponse>), StatusCodes.Status200OK)]
-        [ProducesResponseType(typeof(APIResponse.BaseResponse<APIResponse.LogoutResponse>), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(APIResponse.BaseResponse<bool>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(APIResponse.BaseResponse<bool>), StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> Logout()
         {
             try
@@ -234,18 +236,20 @@ namespace Pienty.Diariest.API.Controllers
                 }
                 _redisService.Remove(RedisHelper.GetKey_AuthToken(authToken));
                 
-                return await Task.FromResult<IActionResult>(Ok(new APIResponse.BaseResponse<APIResponse.LogoutResponse>()
+                return await Task.FromResult<IActionResult>(Ok(new APIResponse.BaseResponse<bool>()
                 {
                     Success = true,
+                    Data = true,
                     Message = _apiMessageService.GetMessage(APIMessage.SuccessLogout)
                 }));
             }
             catch (Exception ex)
             {
                 _logger.LogError(ex, ex.Message);
-                return await Task.FromResult<IActionResult>(Ok(new APIResponse.BaseResponse<APIResponse.LogoutResponse>()
+                return await Task.FromResult<IActionResult>(Ok(new APIResponse.BaseResponse<bool>()
                 {
                     Success = false,
+                    Data = false,
                     Message = _apiMessageService.GetMessage(APIMessage.Error),
                     Error = new APIResponse.ErrorResponse()
                     {

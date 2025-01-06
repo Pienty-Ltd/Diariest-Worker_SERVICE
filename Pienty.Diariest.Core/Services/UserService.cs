@@ -1,6 +1,7 @@
 ﻿using Dapper;
 using Dapper.Contrib.Extensions;
 using Microsoft.Extensions.Logging;
+using Pienty.Diariest.Core.Middleware.Attributes;
 using Pienty.Diariest.Core.Models.Database;
 using Pienty.Diariest.Core.Services.Handlers;
 
@@ -17,6 +18,7 @@ namespace Pienty.Diariest.Core.Services
             _dbService = dbService;
         }
         
+        [Cacheable(60)]
         public User GetUserWithId(long id)
         {
             try

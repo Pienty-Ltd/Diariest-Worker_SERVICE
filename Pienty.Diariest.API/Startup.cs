@@ -1,4 +1,5 @@
-﻿using Dapper;
+﻿using Castle.DynamicProxy;
+using Dapper;
 using Dapper.Contrib.Extensions;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -56,13 +57,28 @@ namespace Pienty.Diariest.API
             //redis pool
             services.AddSingleton<IRedisClientsManager>(new RedisManagerPool(redisConnectionString));
             
+            //redis pool -> caching
+            services.AddSingleton<DBCachingInterceptor>();
+            
             //redis contexts
             services.AddScoped<IRedisService, RedisService>();
             
             //PSQL contexts
             services.AddScoped<IDbService, DbService>();
             services.AddScoped<IBaseService, BaseService>();
+            
             services.AddScoped<IUserService, UserService>();
+            services.AddScoped<IUserService>(provider =>
+            {
+                var proxyGenerator = new ProxyGenerator();
+                var userService = provider.GetService<IUserService>();
+                var cachingInterceptor = provider.GetService<DBCachingInterceptor>();
+
+                return proxyGenerator.CreateInterfaceProxyWithTarget<IUserService>(userService, cachingInterceptor);
+            });
+            
+            services.AddScoped<IAgencyService, AgencyService>();
+            
             services.AddSingleton<APIMessageService>();
             
             //Helpers

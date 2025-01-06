@@ -5,6 +5,8 @@ using System.Text.Json.Serialization;
 namespace Pienty.Diariest.Core.Models.Database
 {
     
+    #region User
+    
     [Table("users")]
     public class User
     {
@@ -38,6 +40,42 @@ namespace Pienty.Diariest.Core.Models.Database
 
         public Language language { get; set; }
     }
+    
+    #endregion
+    
+    #region Agency
+
+    [Table("agency")]
+    public class Agency
+    {
+        [Key]
+        public long id { get; set; }
+        public string name { get; set; }
+        public string email { get; set; }
+        
+        public bool active { get; set; }
+        public bool deleted { get; set; }
+        public Language language { get; set; }
+        public DateTime created_date { get; set; }
+        public DateTime? updated_date { get; set; }
+        public DateTime? deleted_date { get; set; }
+    }
+    
+    [Table("agency_users")]
+    public class AgencyUser
+    {
+        [Key]
+        public long id { get; set; }
+        public long agency_id { get; set; }
+        public long user_id { get; set; }
+        public bool active { get; set; }
+        public bool deleted { get; set; }
+        public DateTime created_date { get; set; }
+        public DateTime? updated_date { get; set; }
+        public DateTime? deleted_date { get; set; }
+    }
+    
+    #endregion
 
     /*public class Website
     {

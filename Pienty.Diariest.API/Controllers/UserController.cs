@@ -36,7 +36,7 @@ namespace Pienty.Diariest.API.Controllers
                 {
                     return await Task.FromResult<IActionResult>(Ok(new APIResponse.BaseResponse<User>()
                     {
-                        Message = "Kullanıcı bulunamadı",
+                        Message = "Kullanıcı bulunamadı.",
                         Success = false
                     }));
                 }
@@ -72,8 +72,9 @@ namespace Pienty.Diariest.API.Controllers
                 var userIsExist = _userService.IsUserExistWithEmail(model.Email);
                 if (userIsExist)
                 {
-                    return await Task.FromResult<IActionResult>(Ok(new APIResponse.BaseResponse<APIResponse.LogoutResponse>()
+                    return await Task.FromResult<IActionResult>(Ok(new APIResponse.BaseResponse<string>()
                     {
+                        Data = null,
                         Message = "Bu e-mail zaten kullanılıyor.",
                         Success = false
                     }));
@@ -101,8 +102,9 @@ namespace Pienty.Diariest.API.Controllers
             catch (Exception ex)
             {
                 _logger.LogError(ex, ex.Message);
-                return await Task.FromResult<IActionResult>(Ok(new APIResponse.BaseResponse<APIResponse.LogoutResponse>()
+                return await Task.FromResult<IActionResult>(Ok(new APIResponse.BaseResponse<string>()
                 {
+                    Data = null,
                     Message = _apiMessageService.GetMessage(APIMessage.Error),
                     Error = new APIResponse.ErrorResponse()
                     {

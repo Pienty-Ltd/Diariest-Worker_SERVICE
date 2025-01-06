@@ -1,7 +1,4 @@
-﻿using System;
-using Pienty.Diariest.Core.Models.Database;
-
-namespace Pienty.Diariest.Core.Models.Database.Redis
+﻿namespace Pienty.Diariest.Core.Models.Database.Redis
 {
     public class AuthenticationToken
     {

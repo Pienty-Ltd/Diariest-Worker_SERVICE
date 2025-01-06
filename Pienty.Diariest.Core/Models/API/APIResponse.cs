@@ -5,6 +5,9 @@ namespace Pienty.Diariest.Core.Models.API
 {
     public class APIResponse
     {
+
+        #region Base
+
         public class ErrorResponse
         {
             public string? Message { get; set; }
@@ -22,21 +25,35 @@ namespace Pienty.Diariest.Core.Models.API
             public ErrorResponse? Error { get; set; }
         }
 
+        #endregion
+
+        #region AuthController
+
         public class LoginResponse
         {
             public AuthenticationToken Authentication { get; set; }   
         }
-    
-        public class LogoutResponse
-        {
-            
-        }
+
+        #endregion
+
+        #region GeneralController
 
         public class GetGeneralResponse
         {
             
             public User User { get; set; }
         }
+
+        #endregion
+
+        #region AgencyController
+
+        public class GetAgencyResponse
+        {
+            
+        }
+
+        #endregion
         
         #region TestResponses 
         
