@@ -6,6 +6,11 @@ namespace Pienty.Diariest.Core.Helpers;
 
 public class StringHelper
 {
+    public static string GetAuthorizationToken(string? bulkToken)
+    {
+        return bulkToken?.Split(" ").Last();
+    }
+    
     public static bool IsValidEmail(string email)
     {
         if (string.IsNullOrWhiteSpace(email)) return false;

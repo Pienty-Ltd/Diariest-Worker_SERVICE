@@ -27,7 +27,9 @@ public class UserAuthAttribute : Attribute, IAsyncAuthorizationFilter
     
     public async Task OnAuthorizationAsync(AuthorizationFilterContext context)
     {
-        var token = context.HttpContext.Request.Headers["Authorization"].FirstOrDefault()?.Split(" ").Last();
+        var bulkToken = context.HttpContext.Request.Headers["Authorization"];
+        var token = StringHelper.GetAuthorizationToken(bulkToken);
+        var ipAddress = context.HttpContext.Connection.RemoteIpAddress?.ToString();
 
         if (string.IsNullOrEmpty(token))
         {
@@ -83,14 +85,6 @@ public class UserAuthAttribute : Attribute, IAsyncAuthorizationFilter
                 return;
             }
             
-            var ipAddress = context.HttpContext.Connection.RemoteIpAddress?.ToString();
-                
-            var ipTokenList = redisService.Get<List<string>>(RedisHelper.GetKey_Limit(ipAddress));
-            if (!ipTokenList.Contains(token))
-            {
-                ipTokenList.Remove(token);
-            }
-            
             var claims = new[]
             {
                 new Claim(ClaimTypes.NameIdentifier, user.id.ToString()),
@@ -117,5 +111,71 @@ public class UserAuthAttribute : Attribute, IAsyncAuthorizationFilter
         {
             StatusCode = statusCode
         };
+    }
+
+    private bool RemoveIPLimitToken(IRedisService _redisService, ILogger<UserAuthAttribute> _logger, string ipAddress, string token)
+    {
+        try
+        {
+            var ipTokenList = _redisService.Get<List<string>>(RedisHelper.GetKey_Limit(ipAddress));
+            
+            if (ipTokenList == null)
+            {
+                return true;
+            }
+            if (ipTokenList.Contains(token))
+            {
+                ipTokenList.Remove(token);
+            }
+
+            if (ipTokenList.Count > 0)
+            {
+                _redisService.SetAsync(RedisHelper.GetKey_Limit(ipAddress), ipTokenList, TimeSpan.FromMinutes(15));
+            }
+            else
+            {
+                _redisService.RemoveAsync(RedisHelper.GetKey_Limit(ipAddress));
+            }
+            return true;
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, ex.Message);
+            return false;
+        }
+    }
+
+    private bool AddIPLimitToken(IRedisService _redisService, ILogger<UserAuthAttribute> _logger, string ipAddress,
+        string token)
+    {
+        try
+        {
+            var ipTokenList = _redisService.Get<List<string>>(RedisHelper.GetKey_Limit(ipAddress));
+            
+            if(ipTokenList == null)
+            {
+                ipTokenList = new List<string>();
+            }
+
+            if (!ipTokenList.Contains(token))
+            {
+                ipTokenList.Add(token);
+            }
+
+            if (ipTokenList.Count > 0)
+            {
+                _redisService.SetAsync(RedisHelper.GetKey_Limit(ipAddress), ipTokenList, TimeSpan.FromMinutes(15));
+            }
+            else
+            {
+                _redisService.RemoveAsync(RedisHelper.GetKey_Limit(ipAddress));
+            }
+            return true;
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, ex.Message);
+            return false;
+        }
     }
 }

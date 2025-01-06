@@ -10,6 +10,7 @@ using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
 using Pienty.Diariest.Core.Contexts;
 using Pienty.Diariest.Core.Helpers;
+using Pienty.Diariest.Core.Middleware;
 using Pienty.Diariest.Core.Services;
 using Pienty.Diariest.Core.Services.Handlers;
 using ServiceStack.Redis;
@@ -93,6 +94,7 @@ namespace Pienty.Diariest.API
             });
 
             app.UseHttpsRedirection();
+            app.UseMiddleware<DiariestRequestMiddleware>();
 
             app.UseCors("AllowAllOrigins");
             app.UseRouting();
