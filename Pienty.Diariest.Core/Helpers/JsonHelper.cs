@@ -1,7 +1,6 @@
 ﻿using Newtonsoft.Json;
-using Newtonsoft.Json.Serialization;
 
-namespace Pienty.CRM.Core.Helpers
+namespace Pienty.Diariest.Core.Helpers
 {
     public class JsonHelper
     {

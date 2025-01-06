@@ -35,7 +35,6 @@ namespace Pienty.Diariest.API.Controllers
             try
             {
                 var authToken = HttpContext.Items["AuthToken"] as string;
-                var ipAddress = HttpContext.Connection.RemoteIpAddress?.ToString();
 
                 var cachedAuthorization =
                     _redisService.Get<AuthenticationToken>(RedisHelper.GetKey_AuthToken(authToken));
