@@ -42,7 +42,7 @@ namespace Pienty.Diariest.Worker.Workers
             try
             {
                 var findedUser = _userService.GetUserWithEmail("tuna@pienty.com");
-                _logger.LogError($"Çalışıyor {JsonHelper.Serialize(findedUser)}");
+                _logger.LogError($"{JsonHelper.Serialize(findedUser)}");
             }
             catch(Exception ex)
             {
