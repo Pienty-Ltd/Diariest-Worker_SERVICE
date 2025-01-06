@@ -58,7 +58,7 @@ namespace Pienty.Diariest.API
             services.AddSingleton<IRedisClientsManager>(new RedisManagerPool(redisConnectionString));
             
             //redis pool -> caching
-            services.AddSingleton<DBCachingInterceptor>();
+            services.AddScoped<DbCachingInterceptor>();
             
             //redis contexts
             services.AddScoped<IRedisService, RedisService>();
@@ -66,13 +66,18 @@ namespace Pienty.Diariest.API
             //PSQL contexts
             services.AddScoped<IDbService, DbService>();
             services.AddScoped<IBaseService, BaseService>();
-            
-            services.AddScoped<IUserService, UserService>();
+
+            services.AddScoped<UserService>();
             services.AddScoped<IUserService>(provider =>
             {
                 var proxyGenerator = new ProxyGenerator();
-                var userService = provider.GetService<IUserService>();
-                var cachingInterceptor = provider.GetService<DBCachingInterceptor>();
+                var userService = provider.GetService<UserService>();
+                if (userService == null)
+                {
+                    throw new InvalidOperationException("UserService is not registered in the service provider.");
+                }
+                
+                var cachingInterceptor = provider.GetService<DbCachingInterceptor>();
 
                 return proxyGenerator.CreateInterfaceProxyWithTarget<IUserService>(userService, cachingInterceptor);
             });

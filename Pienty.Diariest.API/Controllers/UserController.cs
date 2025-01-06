@@ -24,7 +24,7 @@ namespace Pienty.Diariest.API.Controllers
         }
         
         [TestController]
-        [HttpGet("GetUser")]
+        [HttpPost("GetUser")]
         [ProducesResponseType(typeof(APIResponse.BaseResponse<User>), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(APIResponse.BaseResponse<User>), StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> GetUser(APIRequest.GetUserRequest model)

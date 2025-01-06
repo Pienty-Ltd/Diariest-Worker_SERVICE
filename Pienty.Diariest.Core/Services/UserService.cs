@@ -25,7 +25,7 @@ namespace Pienty.Diariest.Core.Services
             {
                 using (var conn = _dbService.GetDbConnection())
                 {
-                    string sql = @"select * from user u where u.id = @Id";
+                    string sql = @"select * from users u where u.id = @Id";
 
                     var res = conn.QueryFirstOrDefault<User>(sql, new { Id = id });
 

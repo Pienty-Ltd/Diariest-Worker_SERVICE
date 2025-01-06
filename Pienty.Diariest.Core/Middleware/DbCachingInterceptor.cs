@@ -7,12 +7,12 @@ using Pienty.Diariest.Core.Services.Handlers;
 
 namespace Pienty.Diariest.Core.Middleware
 {
-    public class DBCachingInterceptor : IInterceptor
+    public class DbCachingInterceptor : IInterceptor
     {
-        private readonly ILogger<DBCachingInterceptor> _logger;
+        private readonly ILogger<DbCachingInterceptor> _logger;
         private readonly IRedisService _redisService;
 
-        public DBCachingInterceptor(ILogger<DBCachingInterceptor> logger, IRedisService redisService)
+        public DbCachingInterceptor(ILogger<DbCachingInterceptor> logger, IRedisService redisService)
         {
             _logger = logger;
             _redisService = redisService;
