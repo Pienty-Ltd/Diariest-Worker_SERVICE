@@ -11,7 +11,7 @@ using Pienty.Diariest.Core.Services.Handlers;
 namespace Pienty.Diariest.API.Controllers
 {
     [ApiController]
-    [Microsoft.AspNetCore.Mvc.Route("api/v1/auth")]
+    [Route("api/v1/auth")]
     public class AuthController : ControllerBase
     {
         private readonly ILogger<AuthController> _logger;

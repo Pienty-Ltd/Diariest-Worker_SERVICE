@@ -17,6 +17,6 @@
     </ItemGroup>
 
     <ItemGroup>
-      <Folder Include="obj\Debug\net7.0\" />
+      <Content Include="obj\Debug\net7.0\Pienty.Diariest.Worker.csproj.FileListAbsolute.txt" />
     </ItemGroup>
 </Project>
