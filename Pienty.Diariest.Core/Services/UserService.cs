@@ -39,6 +39,7 @@ namespace Pienty.Diariest.Core.Services
             }
         }
 
+        [Cacheable(60)]
         public User GetUserWithEmail(string email)
         {
             try
@@ -59,6 +60,7 @@ namespace Pienty.Diariest.Core.Services
             }
         }
 
+        [Cacheable(120)]
         public bool IsUserExistWithEmail(string email)
         {
             try
@@ -68,6 +70,8 @@ namespace Pienty.Diariest.Core.Services
                     string sql = @"SELECT EXISTS(SELECT 1 FROM users u WHERE u.email = @Email)";
 
                     var res = conn.QueryFirstOrDefault<bool>(sql, new { Email = email });
+                    
+                    _logger.LogError($"DB'den data çekildi: {res}");
                     return res;
                 }
             }
@@ -103,7 +107,7 @@ namespace Pienty.Diariest.Core.Services
 
                 using (var conn = _dbService.GetDbConnection())
                 {
-                    string itemSql = @"select * from user u where u.id = @Id";
+                    string itemSql = @"select * from users u where u.id = @Id";
                     var item = conn.QueryFirstOrDefault<User>(itemSql, new { Id = user.id });
 
                     if (item != null)

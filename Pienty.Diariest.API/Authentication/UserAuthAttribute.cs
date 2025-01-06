@@ -54,6 +54,7 @@ public class UserAuthAttribute : Attribute, IAsyncAuthorizationFilter
                 }
                 else
                 {
+                    RemoveIPLimitToken(redisService, logger, ipAddress, token);
                     SetUnauthorizedResult(context, "Authorization token is missing. #3", true);
                     return;
                 }

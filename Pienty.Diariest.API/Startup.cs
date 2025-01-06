@@ -29,8 +29,8 @@ namespace Pienty.Diariest.API
 
         public void ConfigureServices(IServiceCollection services)
         {
-            //SqlMapperExtensions.TableNameMapper = (type) => $"\"{GeneralDbContext.ToSnakeCase(type.Name)}s\"";
-            //Dapper.DefaultTypeMap.MatchNamesWithUnderscores = true;
+            Dapper.DefaultTypeMap.MatchNamesWithUnderscores = true;
+            
             services.AddCors(options =>
             {
                 options.AddPolicy("AllowAllOrigins", builder =>
@@ -101,8 +101,6 @@ namespace Pienty.Diariest.API
         
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
-            Dapper.DefaultTypeMap.MatchNamesWithUnderscores = true;
-            
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
