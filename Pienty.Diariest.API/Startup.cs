@@ -58,7 +58,6 @@ namespace Pienty.Diariest.API
             services.AddSingleton<IRedisClientsManager>(new RedisManagerPool(redisConnectionString));
             
             //redis pool -> caching
-            services.AddScoped<DbCachingInterceptor>();
             
             //redis contexts
             services.AddScoped<IRedisService, RedisService>();
@@ -67,6 +66,7 @@ namespace Pienty.Diariest.API
             services.AddScoped<IDbService, DbService>();
             services.AddScoped<IBaseService, BaseService>();
 
+            services.AddScoped<DbCachingInterceptor>();
             services.AddScoped<UserService>();
             services.AddScoped<IUserService>(provider =>
             {

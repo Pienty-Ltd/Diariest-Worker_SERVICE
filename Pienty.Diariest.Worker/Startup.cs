@@ -1,3 +1,4 @@
+using Castle.DynamicProxy;
 using Coravel;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -6,6 +7,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Pienty.Diariest.Core.Helpers;
+using Pienty.Diariest.Core.Middleware;
 using Pienty.Diariest.Core.Services;
 using Pienty.Diariest.Core.Services.Handlers;
 using Pienty.Diariest.Worker.Workers;
@@ -28,7 +30,21 @@ namespace Pienty.Diariest.Worker
 
             services.AddScoped<IDbService, DbService>();
             services.AddScoped<IBaseService, BaseService>();
-            services.AddScoped<IUserService, UserService>();
+            services.AddScoped<DbCachingInterceptor>();
+            services.AddScoped<UserService>();
+            services.AddScoped<IUserService>(provider =>
+            {
+                var proxyGenerator = new ProxyGenerator();
+                var userService = provider.GetService<UserService>();
+                if (userService == null)
+                {
+                    throw new InvalidOperationException("UserService is not registered in the service provider.");
+                }
+                
+                var cachingInterceptor = provider.GetService<DbCachingInterceptor>();
+
+                return proxyGenerator.CreateInterfaceProxyWithTarget<IUserService>(userService, cachingInterceptor);
+            });
 
             services.AddTransient<GeneralWorker>();
             /*services.AddScoped<IMailService, MailService>();
