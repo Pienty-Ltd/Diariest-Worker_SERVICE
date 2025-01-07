@@ -1,4 +1,3 @@
-using Castle.DynamicProxy;
 using Coravel;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -6,11 +5,10 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using Pienty.Diariest.Core.Extensions;
 using Pienty.Diariest.Core.Helpers;
-using Pienty.Diariest.Core.Middleware;
-using Pienty.Diariest.Core.Services;
-using Pienty.Diariest.Core.Services.Handlers;
 using Pienty.Diariest.Worker.Workers;
+using ServiceStack.Redis;
 
 namespace Pienty.Diariest.Worker
 {
@@ -27,37 +25,17 @@ namespace Pienty.Diariest.Worker
         {
             services.AddControllers();
             services.AddHttpContextAccessor();
-
-            services.AddScoped<IDbService, DbService>();
-            services.AddScoped<IBaseService, BaseService>();
             
-            services.AddScoped<DbCachingInterceptor>();
-            services.AddScoped<UserService>();
-            services.AddScoped<IUserService>(provider =>
-            {
-                var proxyGenerator = new ProxyGenerator();
-                var userService = provider.GetService<UserService>();
-                if (userService == null)
-                {
-                    throw new InvalidOperationException("UserService is not registered in the service provider.");
-                }
-                
-                var cachingInterceptor = provider.GetService<DbCachingInterceptor>();
-
-                return proxyGenerator.CreateInterfaceProxyWithTarget<IUserService>(userService, cachingInterceptor);
-            });
-
-            services.AddTransient<GeneralWorker>();
-            /*services.AddScoped<IMailService, MailService>();
+            var redisConnectionString = Configuration.GetConnectionString("RedisContext");
             
-            services.AddSingleton<ISimdiRequest, SimdiRequest>();
-            services.AddSingleton<ISmsRequest, SmsRequest>();
+            //redis pool
+            services.AddSingleton<IRedisClientsManager>(new RedisManagerPool(redisConnectionString));
 
-            services.AddTransient<WorkAreaWorker>();
+            //all db contexts
+            services.AddDatabase();
+
+            //Workers
             services.AddTransient<GeneralWorker>();
-            services.AddTransient<SmsWorker>();
-            services.AddTransient<MailWorker>();
-            services.AddTransient<PushWorker>();*/
 
             services.AddLogging(options =>
             {

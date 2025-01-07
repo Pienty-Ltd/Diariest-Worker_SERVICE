@@ -3,6 +3,7 @@ using Dapper;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
 using Pienty.Diariest.Core.Contexts;
+using Pienty.Diariest.Core.Extensions;
 using Pienty.Diariest.Core.Helpers;
 using Pienty.Diariest.Core.Middleware;
 using Pienty.Diariest.Core.Services;
@@ -50,32 +51,8 @@ namespace Pienty.Diariest.API
             //redis pool
             services.AddSingleton<IRedisClientsManager>(new RedisManagerPool(redisConnectionString));
             
-            //redis pool -> caching
-            
-            //redis contexts
-            services.AddScoped<IRedisService, RedisService>();
-            
             //PSQL contexts
-            services.AddScoped<IDbService, DbService>();
-            services.AddScoped<IBaseService, BaseService>();
-
-            services.AddScoped<DbCachingInterceptor>();
-            services.AddScoped<UserService>();
-            services.AddScoped<IUserService>(provider =>
-            {
-                var proxyGenerator = new ProxyGenerator();
-                var userService = provider.GetService<UserService>();
-                if (userService == null)
-                {
-                    throw new InvalidOperationException("UserService is not registered in the service provider.");
-                }
-                
-                var cachingInterceptor = provider.GetService<DbCachingInterceptor>();
-
-                return proxyGenerator.CreateInterfaceProxyWithTarget<IUserService>(userService, cachingInterceptor);
-            });
-            
-            services.AddScoped<IAgencyService, AgencyService>();
+            services.AddDatabase();
             
             services.AddSingleton<APIMessageService>();
             
