@@ -3,6 +3,17 @@
     public class APIRequest
     {
         
+        /*
+         *
+         *
+         * [JsonProperty(PropertyName = "TI")]
+           [JsonPropertyName("TI")]
+           [Key("TI")]
+           public string? Message { get; set; }
+         *
+         *
+         */
+        
         #region Auth
         
         public class LoginRequest

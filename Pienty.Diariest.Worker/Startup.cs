@@ -30,6 +30,7 @@ namespace Pienty.Diariest.Worker
 
             services.AddScoped<IDbService, DbService>();
             services.AddScoped<IBaseService, BaseService>();
+            
             services.AddScoped<DbCachingInterceptor>();
             services.AddScoped<UserService>();
             services.AddScoped<IUserService>(provider =>

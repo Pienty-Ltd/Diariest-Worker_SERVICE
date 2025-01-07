@@ -5,6 +5,17 @@ namespace Pienty.Diariest.Core.Models.API
 {
     public class APIResponse
     {
+        
+        /*
+         *
+         *
+         * [JsonProperty(PropertyName = "TI")]
+           [JsonPropertyName("TI")]
+           [Key("TI")]
+           public string? Message { get; set; }
+         *
+         * 
+         */
 
         #region Base
 
@@ -50,7 +61,7 @@ namespace Pienty.Diariest.Core.Models.API
 
         public class GetAgencyResponse
         {
-            
+            public Agency Agency { get; set; }
         }
 
         #endregion

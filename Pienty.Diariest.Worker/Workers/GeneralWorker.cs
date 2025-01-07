@@ -13,6 +13,7 @@ namespace Pienty.Diariest.Worker.Workers
         private readonly IOptions<ApplicationConfig> _options;
         private readonly IBaseService _baseService;
         private readonly IUserService _userService;
+        
         private static object _lock = new object();
         private static bool executing = false;
 

@@ -89,6 +89,7 @@ namespace Pienty.Diariest.API.Controllers
                     created_date = DateTime.Now,
                     updated_date = DateTime.Now,
                     deleted = false,
+                    active = true,
                     permission = UserPermission.Admin,
                     language = Language.Turkish
                 };

@@ -13,6 +13,8 @@ namespace Pienty.Diariest.Core.Models.Database
         [Key]
         public long id { get; set; }
 
+        public string user_hash { get; set; } = Guid.NewGuid().ToString();
+
         public string name { get; set; }
 
         public string email { get; set; }

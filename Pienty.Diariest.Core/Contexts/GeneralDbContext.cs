@@ -9,10 +9,11 @@ namespace Pienty.Diariest.Core.Contexts
         public GeneralDbContext(DbContextOptions<GeneralDbContext> options) : base(options) {}
         
         public DbSet<User> User { get; set; }
+        public DbSet<Agency> Agency { get; set; }
+        public DbSet<AgencyUser> AgencyUser { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            //modelBuilder.Entity<User>().HasKey(model => new { model.Id });
             base.OnModelCreating(modelBuilder);
             foreach (var entity in modelBuilder.Model.GetEntityTypes())
             {

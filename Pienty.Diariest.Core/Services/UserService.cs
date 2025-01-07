@@ -60,7 +60,7 @@ namespace Pienty.Diariest.Core.Services
             }
         }
 
-        [Cacheable(120)]
+        [Cacheable(60)]
         public bool IsUserExistWithEmail(string email)
         {
             try
@@ -71,7 +71,6 @@ namespace Pienty.Diariest.Core.Services
 
                     var res = conn.QueryFirstOrDefault<bool>(sql, new { Email = email });
                     
-                    _logger.LogError($"DB'den data çekildi: {res}");
                     return res;
                 }
             }
@@ -123,8 +122,9 @@ namespace Pienty.Diariest.Core.Services
                         item.active = user.active;
                         item.deleted = user.deleted;
                         item.phone_number = user.phone_number;
+                        item.updated_date = DateTime.UtcNow;
                         
-                        conn.Update<User>(item);
+                        retval = conn.Update<User>(item);
                     }
                     else
                     {
