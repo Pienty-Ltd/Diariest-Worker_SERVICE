@@ -1,16 +1,16 @@
-﻿using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
+﻿using System.ComponentModel.DataAnnotations.Schema;
 using System.Text.Json.Serialization;
+using Dapper.Contrib.Extensions;
 
 namespace Pienty.Diariest.Core.Models.Database
 {
     
     #region User
     
-    [Table("users")]
+    [System.ComponentModel.DataAnnotations.Schema.Table("users")]
     public class User
     {
-        [Key]
+        [System.ComponentModel.DataAnnotations.Key]
         public long id { get; set; }
 
         public string user_hash { get; set; } = Guid.NewGuid().ToString();
@@ -47,10 +47,10 @@ namespace Pienty.Diariest.Core.Models.Database
     
     #region Agency
 
-    [Table("agency")]
+    [System.ComponentModel.DataAnnotations.Schema.Table("agency")]
     public class Agency
     {
-        [Key]
+        [System.ComponentModel.DataAnnotations.Key]
         public long id { get; set; }
         public string name { get; set; }
         public string email { get; set; }
@@ -63,10 +63,10 @@ namespace Pienty.Diariest.Core.Models.Database
         public DateTime? deleted_date { get; set; }
     }
     
-    [Table("agency_users")]
+    [System.ComponentModel.DataAnnotations.Schema.Table("agency_users")]
     public class AgencyUser
     {
-        [Key]
+        [System.ComponentModel.DataAnnotations.Key]
         public long id { get; set; }
         public long agency_id { get; set; }
         public long user_id { get; set; }
@@ -77,6 +77,39 @@ namespace Pienty.Diariest.Core.Models.Database
         public DateTime? deleted_date { get; set; }
     }
     
+    #endregion
+
+    #region AppPage
+
+    [System.ComponentModel.DataAnnotations.Schema.Table("app_pages")]
+    public class AppPage
+    {
+        [System.ComponentModel.DataAnnotations.Key]
+        public long id { get; set; }
+        
+        [ForeignKey("id")]
+        public long parent_id { get; set; }
+        
+        public string page_name { get; set; }
+        public string endpoint { get; set; }
+        
+        
+        [JsonIgnore]
+        public bool deleted { get; set; }
+        
+        [JsonIgnore]
+        public DateTime created_date { get; set; }
+
+        [JsonIgnore]
+        public DateTime? updated_date { get; set; }
+
+        [JsonIgnore]
+        public DateTime? deleted_date { get; set; }
+        
+        [Write(false)]
+        public List<AppPage> Children { get; set; } = new List<AppPage>();
+    }
+
     #endregion
 
     /*public class Website

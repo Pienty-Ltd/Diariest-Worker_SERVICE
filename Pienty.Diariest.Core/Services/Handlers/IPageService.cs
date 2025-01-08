@@ -2,6 +2,7 @@
 {
     public interface IPageService
     {
-    
+        Task InitializeAsync();
+        Task CacheAppPagesToRedisAsync();
     }
 }

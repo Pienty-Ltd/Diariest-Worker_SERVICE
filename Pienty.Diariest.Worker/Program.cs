@@ -21,6 +21,7 @@ namespace Pienty.Diariest.Worker
             provider.UseScheduler(scheduler =>
             {
                 scheduler.Schedule<GeneralWorker>().EverySeconds(5).RunOnceAtStart();
+                scheduler.Schedule<CacheableWorker>().Hourly().RunOnceAtStart();
             }).LogScheduledTaskProgress(provider.GetService<ILogger<IScheduler>>());
 
             await host.RunAsync();

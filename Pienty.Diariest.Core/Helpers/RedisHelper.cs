@@ -26,5 +26,11 @@
             var key = "Ping";
             return $"{key}:{authToken}";
         }
+
+        public static string GetKey_AppPages()
+        {
+            var key = "AppPages";
+            return key;
+        }
     }
 }

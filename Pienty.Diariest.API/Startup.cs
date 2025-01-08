@@ -6,6 +6,7 @@ using Pienty.Diariest.Core.Extensions;
 using Pienty.Diariest.Core.Helpers;
 using Pienty.Diariest.Core.Middleware;
 using Pienty.Diariest.Core.Services;
+using Pienty.Diariest.Core.Services.Handlers;
 using ServiceStack.Redis;
 
 namespace Pienty.Diariest.API
@@ -53,6 +54,7 @@ namespace Pienty.Diariest.API
             //SQL contexts
             services.AddDatabase();
             services.AddGenerativeAI();
+            services.AddCacheableService();
             
             //API Message Service
             services.AddSingleton<APIMessageService>();

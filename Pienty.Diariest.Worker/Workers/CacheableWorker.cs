@@ -2,27 +2,26 @@ using Coravel.Invocable;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Pienty.Diariest.Core.Configurations;
-using Pienty.Diariest.Core.Helpers;
 using Pienty.Diariest.Core.Services.Handlers;
 
 namespace Pienty.Diariest.Worker.Workers
 {
-    public class GeneralWorker : IInvocable
+    public class CacheableWorker : IInvocable
     {
         private readonly ILogger<GeneralWorker> _logger;
         private readonly IOptions<ApplicationConfig> _options;
         private readonly IBaseService _baseService;
-        private readonly IUserService _userService;
+        private readonly IPageService _pageService;
         
         private static object _lock = new object();
         private static bool executing = false;
 
-        public GeneralWorker(ILogger<GeneralWorker> logger, IOptions<ApplicationConfig> options, IBaseService baseService, IUserService userService)
+        public CacheableWorker(ILogger<GeneralWorker> logger, IOptions<ApplicationConfig> options, IBaseService baseService, IPageService pageService)
         {
             _logger = logger;
             _options = options;
             _baseService = baseService;
-            _userService = userService;
+            _pageService = pageService;
         }
         
         public Task Invoke()
@@ -42,8 +41,7 @@ namespace Pienty.Diariest.Worker.Workers
 
             try
             {
-                /*var findedUser = _userService.GetUserWithEmail("tuna@pienty.com");
-                _logger.LogError($"{JsonHelper.Serialize(findedUser)}");*/
+                _pageService.InitializeAsync();
             }
             catch(Exception ex)
             {

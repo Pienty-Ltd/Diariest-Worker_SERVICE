@@ -8,6 +8,12 @@ namespace Pienty.Diariest.Core.Extensions
 {
     public static class DatabaseExtension
     {
+        public static IServiceCollection AddCacheableService(this IServiceCollection services)
+        {
+            services.AddScoped<IPageService, PageService>();
+            return services;
+        }
+        
         public static IServiceCollection AddGenerativeAI(this IServiceCollection services)
         {
             services.AddScoped<IAIService, AIService>();

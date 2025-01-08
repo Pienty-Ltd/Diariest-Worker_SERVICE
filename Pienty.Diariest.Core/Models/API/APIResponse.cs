@@ -1,4 +1,6 @@
-﻿using Pienty.Diariest.Core.Models.Database;
+﻿using System.Text.Json.Serialization;
+using Newtonsoft.Json;
+using Pienty.Diariest.Core.Models.Database;
 using Pienty.Diariest.Core.Models.Database.Redis;
 
 namespace Pienty.Diariest.Core.Models.API
@@ -62,6 +64,17 @@ namespace Pienty.Diariest.Core.Models.API
         public class GetAgencyResponse
         {
             public Agency Agency { get; set; }
+        }
+
+        #endregion
+
+        #region GenerativeAIController
+
+        public class SendMessageToGenerativeAIResponse
+        {
+            [JsonProperty(PropertyName = "r")]
+            [JsonPropertyName("r")]
+            public string Response { get; set; }
         }
 
         #endregion

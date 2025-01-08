@@ -11,6 +11,7 @@ namespace Pienty.Diariest.Core.Contexts
         public DbSet<User> User { get; set; }
         public DbSet<Agency> Agency { get; set; }
         public DbSet<AgencyUser> AgencyUser { get; set; }
+        public DbSet<AppPage> AppPage { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

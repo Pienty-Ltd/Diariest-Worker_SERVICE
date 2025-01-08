@@ -31,11 +31,14 @@ namespace Pienty.Diariest.Worker
             //redis pool
             services.AddSingleton<IRedisClientsManager>(new RedisManagerPool(redisConnectionString));
 
-            //all db contexts
+            //all extensions
             services.AddDatabase();
+            services.AddCacheableService();
+            //services.AddGenerativeAI();
 
             //Workers
             services.AddTransient<GeneralWorker>();
+            services.AddTransient<CacheableWorker>();
 
             services.AddLogging(options =>
             {

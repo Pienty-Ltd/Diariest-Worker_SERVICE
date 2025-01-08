@@ -49,6 +49,19 @@
         }
         
         #endregion
+
+        #region GenerativeAI
+
+        public class SendMessageToGenerativeAIRequest
+        {
+            public string Prompt { get; set; }
+        }
+
+        #endregion
+
+        #region AppPage
+
+        #endregion
         
     }
 }
