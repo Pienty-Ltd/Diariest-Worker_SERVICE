@@ -6,7 +6,7 @@ using Pienty.Diariest.Core.Services.Handlers;
 
 namespace Pienty.Diariest.Core.Extensions
 {
-    public static class DatabaseExtension
+    public static class GeneralServiceExtension
     {
         public static IServiceCollection AddCacheableService(this IServiceCollection services)
         {
