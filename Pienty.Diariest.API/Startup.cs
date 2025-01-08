@@ -1,5 +1,4 @@
-﻿using Castle.DynamicProxy;
-using Dapper;
+﻿using Dapper;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
 using Pienty.Diariest.Core.Contexts;
@@ -7,7 +6,6 @@ using Pienty.Diariest.Core.Extensions;
 using Pienty.Diariest.Core.Helpers;
 using Pienty.Diariest.Core.Middleware;
 using Pienty.Diariest.Core.Services;
-using Pienty.Diariest.Core.Services.Handlers;
 using ServiceStack.Redis;
 
 namespace Pienty.Diariest.API
@@ -51,9 +49,12 @@ namespace Pienty.Diariest.API
             //redis pool
             services.AddSingleton<IRedisClientsManager>(new RedisManagerPool(redisConnectionString));
             
-            //PSQL contexts
+            //extensions
+            //SQL contexts
             services.AddDatabase();
+            services.AddGenerativeAI();
             
+            //API Message Service
             services.AddSingleton<APIMessageService>();
             
             //Helpers

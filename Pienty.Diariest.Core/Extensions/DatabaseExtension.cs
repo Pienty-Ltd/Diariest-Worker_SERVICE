@@ -8,6 +8,13 @@ namespace Pienty.Diariest.Core.Extensions
 {
     public static class DatabaseExtension
     {
+        public static IServiceCollection AddGenerativeAI(this IServiceCollection services)
+        {
+            services.AddScoped<IAIService, AIService>();
+
+            return services;
+        }
+        
         public static IServiceCollection AddDatabase(this IServiceCollection services)
         {
             //redis contexts
@@ -19,6 +26,8 @@ namespace Pienty.Diariest.Core.Extensions
             //sql
             services.AddScoped<IBaseService, BaseService>();
             services.AddScoped<IDbService, DbService>();
+
+            services.AddScoped<IPageService, PageService>();
 
             services.AddScoped<UserService>();
             services.AddScoped<IUserService>(provider =>
