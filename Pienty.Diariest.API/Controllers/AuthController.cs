@@ -1,5 +1,4 @@
-﻿using Pienty.CRM.Core.Helpers;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Pienty.Diariest.API.Authentication;
 using Pienty.Diariest.Core.Helpers;
 using Pienty.Diariest.Core.Models.API;
@@ -18,13 +17,21 @@ namespace Pienty.Diariest.API.Controllers
         private readonly IUserService _userService;
         private readonly IRedisService _redisService;
         private readonly APIMessageService _apiMessageService;
+        private readonly ILoginHistoryService _loginHistoryService;
 
-        public AuthController(ILogger<AuthController> logger, IUserService userService, IRedisService redisService, APIMessageService apiMessageService)
+        public AuthController(
+            ILogger<AuthController> logger, 
+            IUserService userService, 
+            IRedisService redisService, 
+            APIMessageService apiMessageService,
+            ILoginHistoryService loginHistoryService
+            )
         {
             _logger = logger;
             _userService = userService;
             _redisService = redisService;
             _apiMessageService = apiMessageService;
+            _loginHistoryService = loginHistoryService;
         }
 
         [UserAuth(UserPermission.Admin, UserPermission.Agency, UserPermission.Client)]
@@ -180,6 +187,16 @@ namespace Pienty.Diariest.API.Controllers
                 
                 _redisService.Set(RedisHelper.GetKey_User(user.id), user, TimeSpan.FromHours(1));
                 _redisService.Set(RedisHelper.GetKey_AuthToken(authToken), tokenObj, TimeSpan.FromHours(1));
+                
+                //Login History
+                var loginHistory = new UserLoginHistory()
+                {
+                    user_id = user.id,
+                    ip_address = ipAddress,
+                    success = true,
+                    login_date = DateTime.Now
+                };
+                await Task.Run(() => _loginHistoryService.AddLoginHistory(loginHistory));
 
                 return await Task.FromResult<IActionResult>(Ok(new APIResponse.BaseResponse<APIResponse.LoginResponse>()
                 {

@@ -18,7 +18,12 @@ namespace Pienty.Diariest.API.Controllers
         private readonly IRedisService _redisService;
         private readonly APIMessageService _apiMessageService;
 
-        public GeneralController(ILogger<GeneralController> logger, IRedisService redisService, IUserService userService, APIMessageService apiMessageService)
+        public GeneralController(
+            ILogger<GeneralController> logger, 
+            IRedisService redisService, 
+            IUserService userService, 
+            APIMessageService apiMessageService
+            )
         {
             _logger = logger;
             _userService = userService;

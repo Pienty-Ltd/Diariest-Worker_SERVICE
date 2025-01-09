@@ -8,6 +8,14 @@ namespace Pienty.Diariest.Core.Extensions
 {
     public static class GeneralServiceExtension
     {
+        public static IServiceCollection AddDiariestDependencies(this IServiceCollection services)
+        {
+            services.AddDatabase();
+            services.AddCacheableService();
+            services.AddGenerativeAI();
+            return services;
+        }
+        
         public static IServiceCollection AddCacheableService(this IServiceCollection services)
         {
             services.AddScoped<IPageService, PageService>();
@@ -34,6 +42,7 @@ namespace Pienty.Diariest.Core.Extensions
             services.AddScoped<IDbService, DbService>();
 
             services.AddScoped<IPageService, PageService>();
+            services.AddScoped<ILoginHistoryService, LoginHistoryService>();
 
             services.AddScoped<UserService>();
             services.AddScoped<IUserService>(provider =>

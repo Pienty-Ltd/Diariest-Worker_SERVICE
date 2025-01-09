@@ -1,6 +1,4 @@
-using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
-using Pienty.Diariest.API.Authentication;
 using Pienty.Diariest.Core.Helpers;
 using Pienty.Diariest.Core.Models.API;
 using Pienty.Diariest.Core.Models.Database;
@@ -17,7 +15,11 @@ namespace Pienty.Diariest.API.Controllers
         private readonly APIMessageService _apiMessageService;
         private readonly IRedisService _redisService;
 
-        public AppPageController(ILogger<AppPageController> logger, APIMessageService apiMessageService, IRedisService redisService)
+        public AppPageController(
+            ILogger<AppPageController> logger, 
+            APIMessageService apiMessageService, 
+            IRedisService redisService
+            )
         {
             _logger = logger;
             _apiMessageService = apiMessageService;
