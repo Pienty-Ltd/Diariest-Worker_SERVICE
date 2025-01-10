@@ -1,7 +1,6 @@
-﻿using System;
-using System.Security.Cryptography;
+﻿using System.Security.Cryptography;
 
-namespace Pienty.CRM.Core.Helpers
+namespace Pienty.Diariest.Core.Helpers
 {
     public class CryptoHelper
     {

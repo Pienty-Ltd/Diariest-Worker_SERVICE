@@ -42,6 +42,18 @@ namespace Pienty.Diariest.Core.Models.Database
 
         public Language language { get; set; }
     }
+
+    [System.ComponentModel.DataAnnotations.Schema.Table("login_history")]
+    public class UserLoginHistory
+    {
+        [System.ComponentModel.DataAnnotations.Key]
+        public long id { get; set; }
+        
+        public long user_id { get; set; }
+        public string ip_address { get; set; }
+        public bool success { get; set; }
+        public DateTime login_date { get; set; }
+    }
     
     #endregion
     

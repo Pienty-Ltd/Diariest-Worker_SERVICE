@@ -1,5 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
-using Pienty.CRM.Core.Helpers;
+using Pienty.Diariest.Core.Helpers;
 using Pienty.Diariest.API.Authentication;
 using Pienty.Diariest.Core.Models.API;
 using Pienty.Diariest.Core.Models.Database;
@@ -16,7 +16,11 @@ namespace Pienty.Diariest.API.Controllers
         private readonly IUserService _userService;
         private readonly APIMessageService _apiMessageService;
 
-        public UserController(ILogger<UserController> logger, IUserService userService, APIMessageService apiMessageService)
+        public UserController(
+            ILogger<UserController> logger, 
+            IUserService userService, 
+            APIMessageService apiMessageService
+            )
         {
             _logger = logger;
             _userService = userService;

@@ -50,10 +50,8 @@ namespace Pienty.Diariest.API
             services.AddSingleton<IRedisClientsManager>(new RedisManagerPool(redisConnectionString));
             
             //extensions
-            //SQL contexts
-            services.AddDatabase();
-            services.AddGenerativeAI();
-            services.AddCacheableService();
+            //Diariest dependencies
+            services.AddDiariestDependencies();
             
             //API Message Service
             services.AddSingleton<APIMessageService>();

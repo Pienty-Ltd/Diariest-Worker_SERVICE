@@ -1,5 +1,4 @@
 using Microsoft.AspNetCore.Mvc;
-using Pienty.Diariest.API.Authentication;
 using Pienty.Diariest.Core.Models.API;
 using Pienty.Diariest.Core.Models.Database;
 using Pienty.Diariest.Core.Services;
@@ -16,7 +15,12 @@ namespace Pienty.Diariest.API.Controllers
         private readonly IAIService _aiService;
         private readonly IRedisService _redisService;
         
-        public GenerativeAIController(ILogger<GenerativeAIController> logger, APIMessageService apiMessageService, IAIService aiService, IRedisService redisService)
+        public GenerativeAIController(
+            ILogger<GenerativeAIController> logger, 
+            APIMessageService apiMessageService, 
+            IAIService aiService, 
+            IRedisService redisService
+            )
         {
             _logger = logger;
             _apiMessageService = apiMessageService;

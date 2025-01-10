@@ -16,7 +16,12 @@ namespace Pienty.Diariest.API.Controllers
         private readonly IRedisService _redisService;
         private readonly IAgencyService _agencyService;
 
-        public AgencyController(ILogger<AgencyController> logger, APIMessageService apiMessageService, IRedisService redisService, IAgencyService agencyService)
+        public AgencyController(
+            ILogger<AgencyController> logger, 
+            APIMessageService apiMessageService, 
+            IRedisService redisService, 
+            IAgencyService agencyService
+            )
         {
             _logger = logger;
             _apiMessageService = apiMessageService;
