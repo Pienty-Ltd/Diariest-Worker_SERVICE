@@ -32,5 +32,15 @@
             var key = "AppPages";
             return key;
         }
+
+        #region GenerativeAI
+
+        public static string GetKey_GenerativeAIChat(string chatId)
+        {
+            var key = "GenerativeAI_Chat";
+            return $"{key}:{chatId}";
+        }
+
+        #endregion
     }
 }

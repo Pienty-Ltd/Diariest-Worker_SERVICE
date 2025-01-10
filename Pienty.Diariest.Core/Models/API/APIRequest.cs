@@ -54,6 +54,7 @@
 
         public class SendMessageToGenerativeAIRequest
         {
+            public string? ChatId { get; set; }
             public string Prompt { get; set; }
         }
 

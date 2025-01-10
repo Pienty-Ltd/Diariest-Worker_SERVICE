@@ -28,7 +28,7 @@ namespace Pienty.Diariest.API.Controllers
             _redisService = redisService;
         }
         
-        [HttpGet("send")]
+        [HttpPost("send")]
         [ProducesResponseType(typeof(APIResponse.BaseResponse<APIResponse.SendMessageToGenerativeAIResponse>), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(APIResponse.BaseResponse<APIResponse.SendMessageToGenerativeAIResponse>), StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> SendMessageToGenerativeAI(APIRequest.SendMessageToGenerativeAIRequest model) 
@@ -36,12 +36,16 @@ namespace Pienty.Diariest.API.Controllers
             try
             {
                 var prompt = model.Prompt;
+                var chatId = model.ChatId;
 
-                var response = await _aiService.GenerateContent(prompt);
+                var response = await _aiService.GenerateContent(chatId, prompt);
                 
                 return await Task.FromResult<IActionResult>(Ok(new APIResponse.BaseResponse<APIResponse.SendMessageToGenerativeAIResponse>()
                 {
-                    Data = null,
+                    Data = new APIResponse.SendMessageToGenerativeAIResponse()
+                    {
+                        Response = response
+                    },
                     Success = true
                 }));
             }

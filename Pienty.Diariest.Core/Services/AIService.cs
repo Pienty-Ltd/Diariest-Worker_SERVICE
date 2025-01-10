@@ -2,7 +2,9 @@
 using Microsoft.Extensions.Options;
 using Mscc.GenerativeAI;
 using Pienty.Diariest.Core.Configurations;
+using Pienty.Diariest.Core.Helpers;
 using Pienty.Diariest.Core.Services.Handlers;
+using ServiceStack;
 
 namespace Pienty.Diariest.Core.Services
 {
@@ -10,10 +12,12 @@ namespace Pienty.Diariest.Core.Services
     {
         private readonly ILogger<IAIService> _logger;
         private readonly GenerativeModel _generativeModel;
+        private readonly IRedisService _redisService;
 
-        public AIService(ILogger<IAIService> logger, IOptions<ApplicationConfig> options)
+        public AIService(ILogger<IAIService> logger, IOptions<ApplicationConfig> options, IRedisService redisService)
         {
             _logger = logger;
+            _redisService = redisService;
             _generativeModel = new GenerativeModel()
             {
                 ApiKey = options.Value.AIConfig.GeminiAPIKey,
@@ -21,17 +25,42 @@ namespace Pienty.Diariest.Core.Services
             };
         }
 
-        public async Task<string> GenerateContent(string prompt)
+        public async Task<string> GenerateContent(string? chatId, string prompt)
         {
             try
             {
-                var response = await _generativeModel.GenerateContent(prompt);
+                List<ContentResponse> chatHistory = null; 
+                if (chatId != null)
+                {
+                   chatHistory =  _redisService.Get<List<ContentResponse>>(RedisHelper.GetKey_GenerativeAIChat(chatId));
+                }
+                
+                var chat = _generativeModel.StartChat(chatHistory);
+                chatId = chat.GetId().ToString();
+                var response = await chat.SendMessage(prompt);
+
+                Task.Run(() => SaveChatContent(chatId, chatHistory));
+                
                 return response.Text;
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex.Message);
+                _logger.LogError(ex, ex.Message);
                 return null;
+            }
+        }
+
+        public async Task<bool> SaveChatContent(string chatId, List<ContentResponse> response)
+        {
+            try
+            {
+                await _redisService.SetAsync<List<ContentResponse>>(RedisHelper.GetKey_GenerativeAIChat(chatId), response, TimeSpan.FromHours(1));
+                return true;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, ex.Message);
+                return false;
             }
         }
     }
