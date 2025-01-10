@@ -75,6 +75,10 @@ namespace Pienty.Diariest.Core.Models.API
             [JsonProperty(PropertyName = "r")]
             [JsonPropertyName("r")]
             public string Response { get; set; }
+            
+            [JsonProperty(PropertyName = "cid")]
+            [JsonPropertyName("cid")]
+            public string ChatId { get; set; }
         }
 
         #endregion

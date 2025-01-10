@@ -44,7 +44,9 @@ namespace Pienty.Diariest.API.Controllers
                 {
                     Data = new APIResponse.SendMessageToGenerativeAIResponse()
                     {
-                        Response = response
+                        Response = response.Response,
+                        ChatId = response.ChatId
+                        
                     },
                     Success = true
                 }));

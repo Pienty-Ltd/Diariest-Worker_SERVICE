@@ -41,7 +41,7 @@ namespace Pienty.Diariest.API
             
             services.AddSwaggerGen(c =>
             {
-                c.SwaggerDoc("v1.0.0", new OpenApiInfo { Title = "Pienty.CRM.API", Version = "v1.0.0" });
+                c.SwaggerDoc("v1.0.0", new OpenApiInfo { Title = "Pienty.Diariest.API", Version = "v1.0.0" });
             });
             
             var redisConnectionString = Configuration.GetConnectionString("RedisContext");

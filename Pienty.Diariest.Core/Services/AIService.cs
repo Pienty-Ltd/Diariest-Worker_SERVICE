@@ -3,6 +3,7 @@ using Microsoft.Extensions.Options;
 using Mscc.GenerativeAI;
 using Pienty.Diariest.Core.Configurations;
 using Pienty.Diariest.Core.Helpers;
+using Pienty.Diariest.Core.Models.API;
 using Pienty.Diariest.Core.Services.Handlers;
 using ServiceStack;
 
@@ -25,7 +26,7 @@ namespace Pienty.Diariest.Core.Services
             };
         }
 
-        public async Task<string> GenerateContent(string? chatId, string prompt)
+        public async Task<APIResponse.SendMessageToGenerativeAIResponse> GenerateContent(string? chatId, string prompt)
         {
             try
             {
@@ -36,12 +37,16 @@ namespace Pienty.Diariest.Core.Services
                 }
                 
                 var chat = _generativeModel.StartChat(chatHistory);
-                chatId = chat.GetId().ToString();
+                chat.GetId().ToString();
                 var response = await chat.SendMessage(prompt);
 
                 Task.Run(() => SaveChatContent(chatId, chatHistory));
                 
-                return response.Text;
+                return new APIResponse.SendMessageToGenerativeAIResponse()
+                {
+                    Response = response.Text,
+                    ChatId = chat.GetId().ToString()
+                };
             }
             catch (Exception ex)
             {
