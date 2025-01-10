@@ -4,6 +4,7 @@
         <TargetFramework>net7.0</TargetFramework>
         <Nullable>enable</Nullable>
         <ImplicitUsings>enable</ImplicitUsings>
+        <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
     </PropertyGroup>
 
     <ItemGroup>
@@ -16,6 +17,9 @@
     </ItemGroup>
 
     <ItemGroup>
+      <Content Include="..\.dockerignore">
+        <Link>.dockerignore</Link>
+      </Content>
       <Content Include="obj\Debug\net7.0\Pienty.Diariest.API.csproj.CopyComplete" />
       <Content Include="obj\Debug\net7.0\Pienty.Diariest.API.csproj.CoreCompileInputs.cache" />
       <Content Include="obj\Debug\net7.0\Pienty.Diariest.API.csproj.FileListAbsolute.txt" />
@@ -23,6 +27,11 @@
       <Content Include="obj\Debug\net7.0\staticwebassets.build.json" />
       <Content Include="obj\project.packagespec.json" />
       <Content Include="obj\rider.project.restore.info" />
+      <Content Update="appsettings.Release.json">
+        <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+      </Content>
     </ItemGroup>
 
     <ItemGroup>

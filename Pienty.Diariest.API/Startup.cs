@@ -6,7 +6,6 @@ using Pienty.Diariest.Core.Extensions;
 using Pienty.Diariest.Core.Helpers;
 using Pienty.Diariest.Core.Middleware;
 using Pienty.Diariest.Core.Services;
-using Pienty.Diariest.Core.Services.Handlers;
 using ServiceStack.Redis;
 
 namespace Pienty.Diariest.API

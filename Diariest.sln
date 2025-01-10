@@ -6,6 +6,12 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Pienty.Diariest.API", "Pien
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Pienty.Diariest.Worker", "Pienty.Diariest.Worker\Pienty.Diariest.Worker.csproj", "{6A8A203E-45DB-450E-9180-E8C3BD2B41DD}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "SolutionItems", "SolutionItems", "{718ADA84-DF8A-45C3-89DA-B43455689FBD}"
+	ProjectSection(SolutionItems) = preProject
+		publish.bat = publish.bat
+		start_application.sh = start_application.sh
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
